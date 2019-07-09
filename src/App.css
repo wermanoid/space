@@ -19,6 +19,11 @@
   color: white;
 }
 
+.App-header canvas {
+  border: 1px solid darkcyan;
+  margin: 15px;
+}
+
 .App-link {
   color: #61dafb;
 }
