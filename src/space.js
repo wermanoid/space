@@ -1,25 +1,46 @@
-// import { map, forEach } from "lodash/fp";
-
-import { createGridRenderer } from "./utils/grid";
+import { random } from "lodash/fp";
+// import { createGridRenderer } from "./utils/grid";
 import { createFpsRenderer } from "./utils/fps";
+import { sun, earth, moon, venus, mercury } from "./utils/object";
+import { addObject } from "./data-storage";
+
 // import { createCircleRenderer } from "./utils/circle";
 
-const objects = {
-  lastId: 0,
-  velocityVectors: [],
-  objectMasses: [],
-  objectPositions: [],
-  objectSizes: []
-};
+import { solarSystem } from "./solar-system";
+import { renderSystem } from "./render-system";
 
-const addObject = (mass, velocity, position, radius) => {
-  const oId = objects.lastId++;
-  objects.velocityVectors[oId] = velocity;
-  objects.objectMasses[oId] = mass;
-  objects.objectPositions[oId] = position;
-  objects.objectSizes[oId] = radius;
-  return oId;
-};
+const sunId = addObject(sun, {
+  position: [0, 0, 0],
+  velocity: [0, 0, 0],
+  scaleRadius: 2e-7
+});
+const earthId = addObject(earth, {
+  direction: [149.6 * 1e6, random(0, 360)], // km, angle
+  velocity: [50, 50, 0],
+  scalePosition: 2e-9,
+  scaleRadius: 3e-6
+});
+const moonId = addObject(moon, {
+  direction: [384000, random(0, 360)], // km, angle
+  relative: earthId, // relative to earth
+  velocity: [10, 10, 0],
+  scalePosition: 5e1,
+  scaleRadius: 4e-6
+});
+const venusId = addObject(venus, {
+  direction: [108.2 * 1e6, random(0, 360)], // km, angle
+  velocity: [25, 25, 0],
+  scalePosition: 2e-9,
+  scaleRadius: 3e-6
+});
+const mercuryId = addObject(mercury, {
+  direction: [57.91 * 1e6, random(0, 360)], // km, angle
+  velocity: [25, 25, 0],
+  scalePosition: 2e-9,
+  scaleRadius: 3e-6
+});
+
+const objects = [sunId, earthId, moonId, venusId, mercuryId];
 
 export const animate = canvas => {
   if (!canvas) return;
@@ -27,19 +48,24 @@ export const animate = canvas => {
   ctx.globalCompositeOperation = "destination-over";
   const { width, height } = ctx.canvas;
 
-  addObject(1e7, [0, 0], [10, 10], 5);
-  addObject(1e7, [0, 0], [50, 10], 5);
-  addObject(1e7, [0, 0], [10, 50], 5);
-  addObject(1e7, [0, 0], [100, 10], 5);
+  objects.forEach(id => {
+    solarSystem.add(id);
+    renderSystem.add(id);
+  });
 
-  const renderGrid = createGridRenderer(ctx, 20);
+  solarSystem.update();
+  renderSystem.use(ctx);
+
   const renderFps = createFpsRenderer(ctx);
 
   const update = ts => {
     ctx.clearRect(0, 0, width, height);
+
     renderFps(ts);
-    renderGrid();
-    requestAnimationFrame(update);
+    renderSystem.render();
+
+    // renderGrid();
+    // requestAnimationFrame(update);
   };
 
   requestAnimationFrame(update);

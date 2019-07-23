@@ -6,7 +6,7 @@ const createObject = (radius, earthRadius, mass, earthMass, satellites) => ({
   ...(satellites && { satellites })
 });
 
-export const sun = createObject(696342, 109.3, 198855 * 1e25, 333000);
+export const sun = createObject(696342, 109.29, 198855 * 1e25, 333000);
 
 export const uranus = createObject(25362, 3.981, 86832 * 1e21, 14.536);
 

@@ -4,110 +4,50 @@ const { Suite } = require("benchmark");
 
 const size = 1000;
 
-const rs = times(i => i, size); // [1, 2, 3, 4, 5],
-const ps = times(i => [i, i], size); // [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4]],
-const ids = times(i => i, size); // [0, 1, 2, 3, 4]
-const os = times(i => ({ r: i, c: [i, i] }), size);
-const composed = times(i => [[i, i], i], size);
+// const arr = new Array(size).fill(1);
 
-const temp = {
-  save() {},
-  restore() {},
-  a: 0,
-  b: 0,
-  r: 0,
-  render(x, y, r) {
-    this.a = x;
-    this.b = y;
-    this.r = r;
-  }
-};
-
-const render = ([x, y], r) => {
-  temp.save();
-  temp.render(x, y, r);
-  temp.restore();
-};
-
-const upd = coords => {
-  coords[0] += 1;
-  coords[1] += 1;
-};
-
-const exe1_1 = (coords, rads) => {
-  for (let i = 0, id = ids[i]; i < ids.length; i++) {
-    render(coords[id], rads[id]);
-  }
-};
-
-const upd1_1 = coords => {
-  for (let i = 0, id = ids[i]; i < ids.length; i++) {
-    upd(coords[id]);
-  }
-};
-
-const exe1_2 = () => {
-  for (let i = 0, id = ids[i]; i < ids.length; i++) {
-    let x = ps[id];
-    render(x, rs[id]);
-  }
-};
-
-const upd1_2 = () => {
-  for (let i = 0, id = ids[i]; i < ids.length; i++) {
-    upd(ps[id]);
-  }
-};
-
-// ******* array with objects *******
-const exe2_1 = objects => {
-  for (let i = 0, { c, r } = objects[ids[i]]; i < ids.length; i++) {
-    // const { c, r } = objects[id];
-    render(c, r);
-  }
-};
-
-const upd2_1 = objects => {
-  for (let i = 0, id = ids[i]; i < ids.length; i++) {
-    upd(objects[id].c);
-  }
-};
-// ******* array with objects *******
-
-// ****************************
-const system = {
-  own: times(i => i, size),
-  exe(coords, rads) {
-    const list = this.own;
-    for (let i = 0, id = list[i]; i < list.length; i++) {
-      render(coords[id], rads[id]);
-    }
-  },
-  upd(coords) {
-    const list = this.own;
-    for (let i = 0, id = list[i]; i < list.length; i++) {
-      upd(coords[id]);
-    }
-  }
-};
-
-// ****************************
-// const system2 = {
-//   own: times(i => i, size),
-//   exe(comp) {
-//     const list = this.own;
-//     for (let i = 0, id = list[i]; i < list.length; i++) {
-//       let s = comp[id];
-//       render(s[0], s[1]);
-//     }
-//   },
-//   upd(comp) {
-//     const list = this.own;
-//     for (let i = 0, id = list[i]; i < list.length; i++) {
-//       upd(comp[id][0]);
-//     }
+// const upd = () => {
+//   for (let i = 0; i < size; i++) {
+//     const a = arr[i] + i;
+//     arr[i] = a + 1;
 //   }
 // };
+
+function update() {
+  const v = this.values;
+  const u = this.updates;
+  for (let i = 0; i < size; i++) {
+    const a = v[i] + i;
+    v[i] = a + u[i];
+    u[i] += 0.1;
+  }
+}
+
+function Arr() {
+  this.values = new Array(size);
+  this.updates = new Array(size);
+  for (let i = 0; i < size; i++) {
+    this.values[i] = 1.0;
+    this.updates[i] = 1.1;
+  }
+}
+
+Arr.prototype.update = update;
+
+function Lol() {
+  // const b = new ArrayBuffer(2 * size * Float32Array.BYTES_PER_ELEMENT);
+  this.values = new Float32Array(size);
+  this.updates = new Float32Array(size);
+  for (let i = 0; i < size; i++) {
+    this.values[i] = 1.0;
+    this.updates[i] = 1.1;
+  }
+}
+
+Lol.prototype.update = update;
+
+const a = new Arr();
+const s = new Lol();
 
 const suite = new Suite("native", {
   minSamples: 10000,
@@ -118,25 +58,11 @@ const suite = new Suite("native", {
 
 suite
   .add("[AoS] simple", () => {
-    exe2_1(os);
-    upd2_1(os);
+    a.update();
   })
-  .add("[SoA]: references", () => {
-    exe1_1(ps, rs);
-    upd1_1(ps);
+  .add("[SoA]: system", () => {
+    s.update();
   })
-  .add("[SoA]: direct", () => {
-    exe1_2();
-    upd1_2();
-  })
-  .add("[SoA]: system with references", () => {
-    system.exe(ps, rs);
-    system.upd(ps, rs);
-  })
-  // .add("[SoA]: system reference to composition", () => {
-  //   system2.exe(composed);
-  //   system2.upd(composed);
-  // })
   .on("cycle", function(event) {
     console.log(String(event.target));
   })
