@@ -108,7 +108,7 @@ export const animate = canvas => {
 
     renderFps(ts);
     renderSystem.render();
-    solarSystem.update(1 * 24 * 60 * 60);
+    solarSystem.update((1 / 2) * 24 * 60 * 60);
 
     // renderGrid();
     requestAnimationFrame(update);
