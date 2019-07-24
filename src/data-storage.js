@@ -9,7 +9,7 @@ function* objectIdGen() {
 const idGen = objectIdGen();
 const getId = () => idGen.next().value;
 
-export const positions = {}; // objectId -> [x,y,z] position in km or m
+export const positions = []; // objectId -> [x,y,z] position in km or m
 export const scaledPositions = {};
 export const positionScales = {};
 
@@ -17,7 +17,7 @@ export const accelerations = {};
 export const velocities = {};
 export const masses = {};
 
-export const forces = [];
+export const forces = {};
 export const forceVectors = {};
 
 export const radiuses = {};
