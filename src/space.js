@@ -1,7 +1,16 @@
 import { random } from "lodash/fp";
 // import { createGridRenderer } from "./utils/grid";
 import { createFpsRenderer } from "./utils/fps";
-import { sun, earth, moon, venus, mercury } from "./utils/object";
+import {
+  sun,
+  earth,
+  moon,
+  mars,
+  venus,
+  mercury,
+  saturn,
+  jupiter
+} from "./utils/object";
 import { addObject } from "./data-storage";
 
 // import { createCircleRenderer } from "./utils/circle";
@@ -12,35 +21,69 @@ import { renderSystem } from "./render-system";
 const sunId = addObject(sun, {
   position: [0, 0, 0],
   velocity: [0, 0, 0],
-  scaleRadius: 2e-7
+  scaleRadius: 5e-8
 });
-const earthId = addObject(earth, {
-  direction: [149.6 * 1e6, random(0, 360)], // km, angle
-  velocity: [50, 50, 0],
-  scalePosition: 2e-9,
-  scaleRadius: 3e-6
-});
-const moonId = addObject(moon, {
-  direction: [384000, random(0, 360)], // km, angle
-  relative: earthId, // relative to earth
-  velocity: [10, 10, 0],
-  scalePosition: 5e1,
-  scaleRadius: 4e-6
-});
-const venusId = addObject(venus, {
-  direction: [108.2 * 1e6, random(0, 360)], // km, angle
-  velocity: [25, 25, 0],
-  scalePosition: 2e-9,
-  scaleRadius: 3e-6
-});
+
 const mercuryId = addObject(mercury, {
-  direction: [57.91 * 1e6, random(0, 360)], // km, angle
-  velocity: [25, 25, 0],
-  scalePosition: 2e-9,
+  direction: [57.91 * 1e6, 90], //random(0, 360)], // km, angle
+  velocity: [40000, 0, 0],
+  scalePosition: 1e-9,
   scaleRadius: 3e-6
 });
 
-const objects = [sunId, earthId, moonId, venusId, mercuryId];
+const venusId = addObject(venus, {
+  direction: [108.2 * 1e6, 90], //random(0, 360)], // km, angle
+  velocity: [32000, 0, 0],
+  scalePosition: 1e-9,
+  scaleRadius: 3e-6
+});
+
+const earthId = addObject(earth, {
+  direction: [149.6 * 1e6, 90], //random(0, 360)], // km, angle
+  velocity: [28700, 0, 0],
+  scalePosition: 1e-9,
+  scaleRadius: 3e-6
+});
+
+// const moonId = addObject(moon, {
+//   direction: [384000, 90], // random(0, 360)], // km, angle
+//   relative: earthId, // relative to earth
+//   velocity: [170, 0, 0],
+//   scalePosition: 0.01,
+//   scaleRadius: 4e-6
+// });
+
+const marsId = addObject(mars, {
+  direction: [227.9 * 1e6, 90], //random(0, 360)], // km, angle
+  velocity: [22500, 0, 0],
+  scalePosition: 1e-9,
+  scaleRadius: 3e-6
+});
+
+const jupiterId = addObject(jupiter, {
+  direction: [778.5 * 1e6, 90], // km, angle
+  velocity: [12500, 0, 0],
+  scalePosition: 4e-10,
+  scaleRadius: 4e-7
+});
+
+const saturnId = addObject(saturn, {
+  direction: [1.434 * 1e9, 90], // km, angle
+  velocity: [10000, 0, 0],
+  scalePosition: 2.8e-10,
+  scaleRadius: 4e-7
+});
+
+const objects = [
+  sunId,
+  mercuryId,
+  venusId,
+  earthId,
+  // moonId
+  marsId,
+  jupiterId,
+  saturnId
+];
 
 export const animate = canvas => {
   if (!canvas) return;
@@ -53,7 +96,8 @@ export const animate = canvas => {
     renderSystem.add(id);
   });
 
-  solarSystem.update();
+  solarSystem.update(0);
+  // solarSystem.update(100);
   renderSystem.use(ctx);
 
   const renderFps = createFpsRenderer(ctx);
@@ -63,9 +107,10 @@ export const animate = canvas => {
 
     renderFps(ts);
     renderSystem.render();
+    solarSystem.update(1 * 24 * 60 * 60);
 
     // renderGrid();
-    // requestAnimationFrame(update);
+    requestAnimationFrame(update);
   };
 
   requestAnimationFrame(update);
