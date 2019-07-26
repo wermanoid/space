@@ -59,8 +59,8 @@ const renderObjects = (ctx, ids) => {
 };
 
 const getAngle = (oId1, oId2) => {
-  const [x1, y1, z1] = positions[oId1];
-  const [x2, y2, z2] = positions[oId2];
+  const [x1, y1, z1] = coords[oId1];
+  const [x2, y2, z2] = coords[oId2];
   return Math.atan2(y1 - y2, x1 - x2) + Math.PI;
 };
 
@@ -88,24 +88,18 @@ const renderForceVectors = (ctx, ids) => {
   ctx.beginPath();
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
-    if (!id || !forces[id]) continue;
     const objectsList = Object.keys(forces[id]);
     for (let j = 0; j < objectsList.length; j++) {
       const id2 = objectsList[j];
-      if (id !== id2) {
-        // const force = forces[id][id2]
-        //   .map(f => Math.sign(f) * Math.log10(Math.abs(f)))
-        //   .map(xx);
-        const [F] = forces[id][id2];
+      const [F] = forces[id][id2];
 
-        const force = Math.log10(Math.abs(F));
-        const [x0, y0] = coords[id];
-        const angle = getAngle(id, id2);
-        // const angle = Math.atan2(y0 - y1, x0 - x1) + Math.PI;
-        // console.log(force);
-        ctx.moveTo(x0, y0);
-        ctx.lineTo(x0 + Math.cos(angle) * force, y0 + Math.sin(angle) * force);
-      }
+      const force = Math.abs(Math.log10(Math.abs(F)));
+
+      const [x0, y0] = coords[id];
+      const angle = getAngle(id, id2);
+
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x0 + Math.cos(angle) * force, y0 + Math.sin(angle) * force);
     }
   }
   ctx.strokeStyle = "red";
