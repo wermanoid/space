@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <canvas width="1000" height="600" ref={animate} />
+        <canvas width="1000" height="1000" ref={animate} />
       </header>
     </div>
   );
