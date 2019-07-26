@@ -1,6 +1,6 @@
 import {
   positions,
-  disances,
+  // disances,
   forces,
   masses,
   accelerations,
@@ -64,6 +64,9 @@ const getAngle = (oId1, oId2) => {
   return Math.atan2(y1 - y2, x1 - x2) + Math.PI;
 };
 
+const get3DDistance = ([x1, y1, z1], [x2, y2, z2]) =>
+  Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2);
+
 const renderForceVectors = (ctx, ids) => {
   ctx.save();
   ctx.beginPath();
@@ -93,11 +96,11 @@ const renderForceVectors = (ctx, ids) => {
         // const force = forces[id][id2]
         //   .map(f => Math.sign(f) * Math.log10(Math.abs(f)))
         //   .map(xx);
-        const [F, angle] = forces[id][id2];
+        const [F] = forces[id][id2];
 
         const force = Math.log10(Math.abs(F));
         const [x0, y0] = coords[id];
-        // const angle = getAngle(id, id2);
+        const angle = getAngle(id, id2);
         // const angle = Math.atan2(y0 - y1, x0 - x1) + Math.PI;
         // console.log(force);
         ctx.moveTo(x0, y0);
@@ -111,6 +114,9 @@ const renderForceVectors = (ctx, ids) => {
   ctx.restore();
 };
 
+const lgScale = n => n / 1000;
+// n > 5000 ? Math.sign(n) * Math.log10(Math.abs(n)) : n / 100;
+
 const renderVelocityVectors = (ctx, ids) => {
   ctx.save();
   ctx.beginPath();
@@ -119,8 +125,9 @@ const renderVelocityVectors = (ctx, ids) => {
     const id = ids[i];
     const [vX, vY] = velocities[id] || [0, 0];
     const [x0, y0] = coords[id] || [0, 0];
+
     ctx.moveTo(x0, y0);
-    ctx.lineTo(x0 + vX / 1000, y0 + vY / 1000);
+    ctx.lineTo(x0 + lgScale(vX), y0 + lgScale(vY));
   }
 
   ctx.strokeStyle = "lime";

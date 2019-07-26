@@ -3,16 +3,14 @@
 
 import {
   positions,
-  disances,
+  // disances,
   forces,
   masses,
   accelerations,
   directions,
-  relativeDirections,
   relatives,
   positionScales,
   scaledPositions,
-  toIds,
   forceVectors,
   velocities
 } from "./data-storage";
@@ -47,10 +45,10 @@ const roundTrigonometry = x => (Math.abs(x) < 1e-5 ? 0 : x);
 const getForce = (fromId, toId) => {
   const [x1, y1, z1] = positions[fromId];
   const [x2, y2, z2] = positions[toId];
-  disances[fromId] = disances[fromId] || {};
+  // disances[fromId] = disances[fromId] || {};
 
   const distanceSquare = (x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2;
-  disances[fromId][toId] = Math.sqrt(distanceSquare);
+  // disances[fromId][toId] = Math.sqrt(distanceSquare);
   const F = (G * masses[fromId] * masses[toId]) / distanceSquare; // memoize G * masses[oId1] * masses[oId2] ?
   const angle = getAngle(fromId, toId);
   // console.log(angle, (angle * 180) / Math.PI);
@@ -83,8 +81,6 @@ const updateForces = oIds => {
       forceVectors[id][id2] = forceVector;
       forces[id2][id] = [F, angle + Math.PI];
       forceVectors[id2][id] = forceVector;
-      // console.log(id, id2, forceVectors[id][id2]);
-      // console.log(id2, id, forceVectors[id2][id]);
     }
   }
 };
@@ -104,19 +100,19 @@ const updateAccelerations = oIds => {
       accelerations[id][id2] = getAccelerations(id, id2);
       accelerations[id2][id] = getAccelerations(id2, id);
     }
-    id === 2 && console.log(accelerations[2]);
+    // id === 2 && console.log("updateAccelerations", accelerations[2]);
   }
 };
 
 const updateVelocities = (t, ids) => {
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
-    const accelTotal = zipSum(...Object.values(accelerations[id]));
-    id === 2 && console.log("total acc", accelTotal, velocities[id]);
+    const accelTotal = zipSum(...accelerations[id]);
+    // id === 2 && console.log("total acc", accelTotal, velocities[id]);
 
     velocities[id] = zipSum(velocities[id], accelTotal.map(a => a * t));
 
-    id === 2 && console.log("velocity final", velocities[id]);
+    // id === 2 && console.log("velocity final", velocities[id]);
   }
 };
 
@@ -126,19 +122,27 @@ const updatePositions = (ids, root) => {
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
 
+    // actual position
     const [distance, angle] = directions[id];
-    const scaled = distance * (positionScales[id] || 1);
     positions[id] = [
       rootX + distance * roundTrigonometry(Math.cos(angle)),
       rootY + distance * roundTrigonometry(Math.sin(angle)),
       0
     ];
 
+    // scale to fit screen somehow
+    const scaled = distance * (positionScales[id] || 1);
+    // id === 2 &&
+    //   console.log("positioning", distance, scaled, (angle * 180) / Math.PI);
     scaledPositions[id] = [
       scaledRootX + scaled * roundTrigonometry(Math.cos(angle)),
       scaledRootY + scaled * roundTrigonometry(Math.sin(angle)),
       0
     ];
+    // id === 1 && console.log("earth", "updatePositions", positions[id]);
+    // id === 2 && console.log("moon", "updatePositions", positions[id]);
+    // id === 1 && console.log("earth", "updatePositions2", scaledPositions[id]);
+    // id === 2 && console.log("moon", "updatePositions2", scaledPositions[id]);
   }
 };
 
@@ -151,26 +155,16 @@ const updateRelativePositions = ids => {
 };
 
 const updateDirections = (t, ids, root) => {
-  // root >= 0 && console.log(t, ids, root);
   const rootPosition = positions[root] || [0, 0, 0];
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
     const initialPosition = positions[id];
-
-    root >= 0 && console.log("iDirection", directions[id]);
-
     const deltaPosition = velocities[id].map(v => v * t);
-
-    // console.log(id, "iVelocity", velocities[id]);
-
     const newPosition = zipSum(initialPosition, deltaPosition);
-    root >= 0 && console.log(id, "iPositions", newPosition, positions[id]);
     positions[id] = newPosition;
     const updatedAngle = getAngle(root || 0, id);
     const updatedDistance = get3DDistance(newPosition, rootPosition);
-    id === "2" &&
-      console.log(directions[id][0], (directions[id][1] * 180) / Math.PI);
-    id === "2" && console.log(updatedDistance, (updatedAngle * 180) / Math.PI);
+
     directions[id] = [updatedDistance, updatedAngle];
   }
 };
@@ -284,7 +278,10 @@ export const solarSystem = {
   addRelative(root, sattelites) {
     this.roots.push(root);
     relatives[root] = [...sattelites];
-    sattelites.forEach(id => this.all.push(id));
+    sattelites.forEach(id => {
+      this.all.push(id);
+      velocities[id] = zipSum(velocities[id], velocities[root]);
+    });
   },
   update(t) {
     console.time("update");
