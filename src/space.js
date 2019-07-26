@@ -46,20 +46,19 @@ const earthId = addObject(earth, {
   scaleRadius: 3e-6
 });
 
-// const moonId = addObject(moon, {
-//   direction: [384400, 270], // random(0, 360)], // km, angle
-//   relative: earthId, // relative to earth
-//   velocity: [1, 0, 0],
-//   scalePosition: 40,
-//   scaleRadius: 4e-6
-// });
+const moonId = addObject(moon, {
+  direction: [384400, 270], // random(0, 360)], // km, angle
+  velocity: [100, 0, 0],
+  scalePosition: 5e-8,
+  scaleRadius: 4e-6
+});
 
-// const marsId = addObject(mars, {
-//   direction: [227.9 * 1e6, 90], //random(0, 360)], // km, angle
-//   velocity: [22500, 0, 0],
-//   scalePosition: 1e-9,
-//   scaleRadius: 3e-6
-// });
+const marsId = addObject(mars, {
+  direction: [227.9 * 1e6, 90], //random(0, 360)], // km, angle
+  velocity: [22500, 0, 0],
+  scalePosition: 1e-9,
+  scaleRadius: 3e-6
+});
 
 // const jupiterId = addObject(jupiter, {
 //   direction: [778.5 * 1e6, 90], // km, angle
@@ -79,12 +78,13 @@ const objects = [
   sunId,
   // mercuryId,
   // venusId,
-  earthId
-  // moonId
-  // marsId,
+  earthId,
+  marsId
   // jupiterId,
   // saturnId
 ];
+
+const relatives = [[earthId, moonId]];
 
 export const animate = canvas => {
   if (!canvas) return;
@@ -95,6 +95,11 @@ export const animate = canvas => {
   objects.forEach(id => {
     solarSystem.add(id);
     renderSystem.add(id);
+  });
+
+  relatives.forEach(([root, ...sattelites]) => {
+    solarSystem.addRelative(root, sattelites);
+    sattelites.forEach(id => renderSystem.add(id));
   });
 
   solarSystem.update(0);
@@ -111,7 +116,11 @@ export const animate = canvas => {
     solarSystem.update((1 / 2) * 24 * 60 * 60);
 
     // renderGrid();
-    requestAnimationFrame(update);
+    // requestAnimationFrame(update);
+  };
+
+  window.exe = () => {
+    update(100);
   };
 
   // setInterval(() => {
@@ -120,7 +129,7 @@ export const animate = canvas => {
   //   solarSystem.update(1 * 24 * 60 * 60);
   // }, 500);
 
-  requestAnimationFrame(update);
+  // requestAnimationFrame(update);
 };
 
 // import { map, forEach } from "lodash";

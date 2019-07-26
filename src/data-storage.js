@@ -35,7 +35,7 @@ export const toRad = degree => (degree / 180) * Math.PI;
 
 export const addObject = (
   object,
-  { direction, relative, velocity, scaleRadius, scalePosition } = {}
+  { direction, velocity, scaleRadius, scalePosition } = {}
 ) => {
   const oId = getId();
   // positions[oId] = position.map(p => p * 1e3); // km to m
@@ -46,15 +46,7 @@ export const addObject = (
   scaleRadius && (radiusScales[oId] = scaleRadius);
   scalePosition && (positionScales[oId] = scalePosition);
 
-  if (!direction) return oId;
+  directions[oId] = [direction[0] * 1e3, toRad(direction[1])];
 
-  const result = [direction[0] * 1e3, toRad(direction[1])]; // [meter, rad];
-
-  if (relative >= 0) {
-    relatives[oId] = relative;
-    relativeDirections[oId] = result;
-  } else {
-    directions[oId] = result;
-  }
   return oId;
 };

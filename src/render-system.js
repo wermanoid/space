@@ -48,7 +48,8 @@ const renderObjects = (ctx, ids) => {
   ctx.strokeStyle = "orange";
   // let id;
   for (let i = 0, id = ids[0]; i < ids.length; i++, id = ids[i]) {
-    // const id = ids[i];
+    // id === "1" && console.log(scaledPositions[id]);
+    // id === "2" && console.log(scaledPositions[id]);
     const shift = zipSum(scaledPositions[id], zero);
     const radius = Math.round((radiuses[id] * (radiusScales[id] || 1)) / 2);
     coords[id] = shift;
@@ -68,6 +69,8 @@ const renderForceVectors = (ctx, ids) => {
   ctx.beginPath();
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
+
+    if (!id || !forces[id]) continue;
     const objectsList = Object.keys(forces[id]);
     for (let j = 0; j < objectsList.length; j++) {
       const [x0, y0] = coords[id];
@@ -80,26 +83,25 @@ const renderForceVectors = (ctx, ids) => {
   ctx.stroke();
 
   ctx.beginPath();
-  const xx = v => (Number.isNaN(v) ? 0 : v);
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
+    if (!id || !forces[id]) continue;
     const objectsList = Object.keys(forces[id]);
     for (let j = 0; j < objectsList.length; j++) {
       const id2 = objectsList[j];
       if (id !== id2) {
-        const force = forces[id][id2]
-          .map(f => Math.sign(f) * Math.log10(Math.abs(f)))
-          .map(xx);
+        // const force = forces[id][id2]
+        //   .map(f => Math.sign(f) * Math.log10(Math.abs(f)))
+        //   .map(xx);
+        const [F, angle] = forces[id][id2];
+
+        const force = Math.log10(Math.abs(F));
         const [x0, y0] = coords[id];
-        const [x1, y1] = coords[id2];
-        // const angle = getAngle(id2, id);
-        const angle = Math.atan2(y0 - y1, x0 - x1) + Math.PI;
-        console.log(force);
+        // const angle = getAngle(id, id2);
+        // const angle = Math.atan2(y0 - y1, x0 - x1) + Math.PI;
+        // console.log(force);
         ctx.moveTo(x0, y0);
-        ctx.lineTo(
-          x0 + Math.cos(angle) * Math.abs(force[0]),
-          y0 + Math.sin(angle) * Math.abs(force[1])
-        );
+        ctx.lineTo(x0 + Math.cos(angle) * force, y0 + Math.sin(angle) * force);
       }
     }
   }
