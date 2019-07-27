@@ -1,5 +1,3 @@
-import { random } from "lodash/fp";
-// import { createGridRenderer } from "./utils/grid";
 import { createFpsRenderer } from "./utils/fps";
 import {
   sun,
@@ -13,49 +11,47 @@ import {
 } from "./utils/object";
 import { addObject } from "./data-storage";
 
-// import { createCircleRenderer } from "./utils/circle";
-
 import { solarSystem } from "./solar-system";
 import { renderSystem } from "./render-system";
 
 const sunId = addObject(sun, {
-  position: [0, 0, 0],
+  direction: [0, 0],
   velocity: [0, 0, 0],
+  scalePosition: 1e-9,
   scaleRadius: 5e-8
 });
 
 const mercuryId = addObject(mercury, {
-  direction: [57.91 * 1e6, 90], //random(0, 360)], // km, angle
-  velocity: [40000, 0, 0],
+  direction: [57.91 * 1e6, 180], //random(0, 360)], // km, angle
+  velocity: [0, 48000, 0],
   scalePosition: 1e-9,
   scaleRadius: 3e-6
 });
 
 const venusId = addObject(venus, {
-  direction: [108.2 * 1e6, 90], //random(0, 360)], // km, angle
-  velocity: [32000, 0, 0],
+  direction: [108.2 * 1e6, 0], //random(0, 360)], // km, angle
+  velocity: [0, -35000, 0],
   scalePosition: 1e-9,
   scaleRadius: 3e-6
 });
 
 const earthId = addObject(earth, {
-  direction: [149.6 * 1e6, 90], //random(0, 360)], // km, angle
-  velocity: [28700, 0, 0],
+  direction: [149.6 * 1e6, 270], //random(0, 360)], // km, angle
+  velocity: [-30000, 0, 0],
   scalePosition: 1e-9,
   scaleRadius: 3e-6
 });
 
-// const moonId = addObject(moon, {
-//   direction: [384000, 90], // random(0, 360)], // km, angle
-//   relative: earthId, // relative to earth
-//   velocity: [170, 0, 0],
-//   scalePosition: 0.01,
-//   scaleRadius: 4e-6
-// });
+const moonId = addObject(moon, {
+  direction: [384400, 270], // random(0, 360)], // km, angle
+  velocity: [1000, 0, 0],
+  scalePosition: 5e-8,
+  scaleRadius: 4e-6
+});
 
 const marsId = addObject(mars, {
   direction: [227.9 * 1e6, 90], //random(0, 360)], // km, angle
-  velocity: [22500, 0, 0],
+  velocity: [22000, 0, 0],
   scalePosition: 1e-9,
   scaleRadius: 3e-6
 });
@@ -79,11 +75,12 @@ const objects = [
   mercuryId,
   venusId,
   earthId,
-  // moonId
   marsId,
   jupiterId,
   saturnId
 ];
+
+const relatives = [[earthId, moonId]];
 
 export const animate = canvas => {
   if (!canvas) return;
@@ -96,8 +93,12 @@ export const animate = canvas => {
     renderSystem.add(id);
   });
 
+  relatives.forEach(([root, ...sattelites]) => {
+    solarSystem.addRelative(root, sattelites);
+    sattelites.forEach(id => renderSystem.add(id));
+  });
+
   solarSystem.update(0);
-  // solarSystem.update(100);
   renderSystem.use(ctx);
 
   const renderFps = createFpsRenderer(ctx);
@@ -107,9 +108,8 @@ export const animate = canvas => {
 
     renderFps(ts);
     renderSystem.render();
-    solarSystem.update(1 * 24 * 60 * 60);
+    solarSystem.update((1 / 12) * 24 * 60 * 60);
 
-    // renderGrid();
     requestAnimationFrame(update);
   };
 

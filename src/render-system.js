@@ -1,6 +1,6 @@
 import {
   positions,
-  disances,
+  // disances,
   forces,
   masses,
   accelerations,
@@ -48,7 +48,8 @@ const renderObjects = (ctx, ids) => {
   ctx.strokeStyle = "orange";
   // let id;
   for (let i = 0, id = ids[0]; i < ids.length; i++, id = ids[i]) {
-    // const id = ids[i];
+    // id === "1" && console.log(scaledPositions[id]);
+    // id === "2" && console.log(scaledPositions[id]);
     const shift = zipSum(scaledPositions[id], zero);
     const radius = Math.round((radiuses[id] * (radiusScales[id] || 1)) / 2);
     coords[id] = shift;
@@ -57,11 +58,22 @@ const renderObjects = (ctx, ids) => {
   ctx.restore();
 };
 
+const getAngle = (oId1, oId2) => {
+  const [x1, y1, z1] = coords[oId1];
+  const [x2, y2, z2] = coords[oId2];
+  return Math.atan2(y1 - y2, x1 - x2) + Math.PI;
+};
+
+const get3DDistance = ([x1, y1, z1], [x2, y2, z2]) =>
+  Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2);
+
 const renderForceVectors = (ctx, ids) => {
   ctx.save();
   ctx.beginPath();
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
+
+    if (!id || !forces[id]) continue;
     const objectsList = Object.keys(forces[id]);
     for (let j = 0; j < objectsList.length; j++) {
       const [x0, y0] = coords[id];
@@ -78,14 +90,16 @@ const renderForceVectors = (ctx, ids) => {
     const id = ids[i];
     const objectsList = Object.keys(forces[id]);
     for (let j = 0; j < objectsList.length; j++) {
-      if (id !== objectsList[j]) {
-        const force = Math.log10(forces[id][objectsList[j]]);
-        const [x0, y0] = coords[id];
-        const [x1, y1] = coords[objectsList[j]];
-        const angle = Math.atan2(y0 - y1, x0 - x1);
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x1 + Math.cos(angle) * force, y1 + Math.sin(angle) * force);
-      }
+      const id2 = objectsList[j];
+      const [F] = forces[id][id2];
+
+      const force = Math.abs(Math.log10(Math.abs(F)));
+
+      const [x0, y0] = coords[id];
+      const angle = getAngle(id, id2);
+
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x0 + Math.cos(angle) * force, y0 + Math.sin(angle) * force);
     }
   }
   ctx.strokeStyle = "red";
@@ -93,6 +107,9 @@ const renderForceVectors = (ctx, ids) => {
 
   ctx.restore();
 };
+
+const lgScale = n => n / 1000;
+// n > 5000 ? Math.sign(n) * Math.log10(Math.abs(n)) : n / 100;
 
 const renderVelocityVectors = (ctx, ids) => {
   ctx.save();
@@ -102,8 +119,9 @@ const renderVelocityVectors = (ctx, ids) => {
     const id = ids[i];
     const [vX, vY] = velocities[id] || [0, 0];
     const [x0, y0] = coords[id] || [0, 0];
+
     ctx.moveTo(x0, y0);
-    ctx.lineTo(x0 + vX / 1000, y0 + vY / 1000);
+    ctx.lineTo(x0 + lgScale(vX), y0 + lgScale(vY));
   }
 
   ctx.strokeStyle = "lime";
