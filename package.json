@@ -26,7 +26,8 @@
   "author": "Alex Werman",
   "license": "ISC",
   "resolutions": {
-    "babel-core": "^7.0.0-bridge.0"
+    "babel-core": "^7.0.0-bridge.0",
+    "lodash": "^4.17.15"
   },
   "sideEffects": [
     "*.css"

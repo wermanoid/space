@@ -26,7 +26,7 @@ describe('Vector', () => {
 
     return new Promise(r => {
       suite
-        .add('[AoS] simple', () => {
+        .add('vectors sum', () => {
           sum(...data);
         })
         .on('cycle', (event: { target: string }) => {
