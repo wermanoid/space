@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "jsx": "react",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "lib": ["es6", "dom", "esnext"],
+    "rootDir": "./",
+    "baseUrl": "./",
+    "paths": {
+      "*": ["node_modules/*", "typings/*"],
+      "#config/*": ["config/*"],
+      "#server": ["src/server"],
+      "#server/*": ["src/server/*"],
+      "#shared": ["src/shared"],
+      "#shared/*": ["src/shared/*"],
+      "#atom/*": ["src/shared/atoms/*"]
+    }
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useCache": false,
+    "useBabel": true,
+    "babelCore": "@babel/core",
+    "forceIsolatedModules": true
+  },
+  "include": ["typings/*", "src/**/*", "config/**/*", "scripts/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
