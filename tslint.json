@@ -14,6 +14,7 @@
       "avoid-template",
       "jsx-double"
     ],
+    "prefer-for-of": false,
     "interface-name": [true, "never-prefix"],
     "no-implicit-dependencies": false,
     "no-submodule-imports": false,

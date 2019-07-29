@@ -48,6 +48,7 @@
     "@storybook/addon-links": "^5.0.9",
     "@storybook/addons": "^5.0.9",
     "@storybook/react": "^5.0.9",
+    "@types/benchmark": "^1.0.31",
     "@types/config": "^0.0.34",
     "@types/cors": "^2.8.4",
     "@types/express": "^4.16.1",
