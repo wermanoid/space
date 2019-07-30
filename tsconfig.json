@@ -29,7 +29,8 @@
       "#server/*": ["src/server/*"],
       "#shared": ["src/shared"],
       "#shared/*": ["src/shared/*"],
-      "#atom/*": ["src/shared/atoms/*"]
+      "#atom/*": ["src/shared/atoms/*"],
+      "#lib/*": ["src/libs/*"]
     }
   },
   "awesomeTypescriptLoaderOptions": {

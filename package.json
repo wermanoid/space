@@ -17,7 +17,9 @@
     "type:check": "tsc",
     "start:prod": " NODE_ENV=production yarn babel-node dist/server --extensions '.ts,.js'",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "prebench": "cross-env BABEL_ENV=test NODE_ENV=development babel src/**/*.bench.ts --extensions '.ts,.js' --out-dir dist",
+    "bench": "cross-env BABEL_ENV=test NODE_ENV=development babel-node --extensions '.ts,.js' scripts/benchmark.ts"
   },
   "keywords": [
     "react",
@@ -87,6 +89,7 @@
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
     "enzyme-to-json": "^3.3.5",
+    "fast-glob": "^3.0.4",
     "file-loader": "^3.0.1",
     "fork-ts-checker-webpack-plugin": "^1.0.2",
     "jest": "^24.7.1",

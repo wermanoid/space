@@ -15,6 +15,7 @@ module.exports = {
       '#server': src('server'),
       '#shared': src('shared'),
       '#client': src('client'),
+      '#lib': src('libs'),
       '#atom': src('shared/atoms'),
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
