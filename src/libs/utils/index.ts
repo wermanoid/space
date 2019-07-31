@@ -1,12 +1,13 @@
-import { round } from 'lodash';
-
-export const cos = (rad: number, precision: number = 5) => {
-  // const x = Math.cos(rad);
+export const cos = (rad: number, precision: number = 1e-5) => {
+  const x = Math.cos(rad);
+  if (Math.abs(x) < precision) return 0;
+  return x;
   // return Math.abs(x) < precision ? 0 : x;
-  return round(Math.cos(rad), precision);
 };
-export const sin = (rad: number, precision: number = 5) => {
-  // const x = Math.sin(rad);
+
+export const sin = (rad: number, precision: number = 1e-5) => {
+  const x = Math.sin(rad);
+  if (Math.abs(x) < precision) return 0;
+  return x;
   // return Math.abs(x) < precision ? 0 : x;
-  return round(Math.sin(rad), precision);
 };

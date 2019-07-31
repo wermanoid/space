@@ -11,10 +11,10 @@ export const sum = (...vectors: Vector3D[]): Vector3D => {
   let resultY = 0;
   let resultZ = 0;
   for (let i = 0; i < vectors.length; i++) {
-    const [x, y, z] = vectors[i];
-    resultX += x;
-    resultY += y;
-    resultZ += z;
+    const v = vectors[i];
+    resultX += v[0];
+    resultY += v[1];
+    resultZ += v[2];
   }
   return createVector(resultX, resultY, resultZ);
 };

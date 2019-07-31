@@ -15,7 +15,7 @@ const suite = new Suite('Space benchmarks', {
     process.exit(0);
   });
 
-glob(['dist/**/*.bench.js']).then(globs => {
+glob(['src/**/*.bench.ts']).then(globs => {
   globs
     .map(bench => require(join(process.cwd(), bench)).default)
     .reduce((acc, suites) => acc.concat(suites), [])

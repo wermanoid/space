@@ -1,24 +1,31 @@
-import { createVector } from '#lib/vector';
-import { sin, cos } from '#lib/utils';
+import { createVector, sum, Vector3D } from '#lib/vector';
 
 import { ObjectId, Distance3D, Point3D } from '../types';
+
+function getRelativeCoordinates(distance: Distance3D, scale: number): Vector3D {
+  const dist = distance[0] * scale;
+  const teta = distance[1];
+  const phi = distance[2];
+  const xyProjection = Math.sin(teta);
+
+  return [
+    dist * Math.cos(phi) * xyProjection,
+    dist * Math.sin(phi) * xyProjection,
+    dist * Math.cos(teta),
+  ];
+}
 
 export const coordinatesUpdaterFactory = (
   distances: Record<ObjectId, Distance3D>,
   scales: Record<ObjectId, number>,
   coordinates: Record<ObjectId, Point3D>
 ) => (rootId: ObjectId, ids: ObjectId[]) => {
-  const [rX, rY, rZ] = (coordinates[rootId] =
+  const rootCoord = (coordinates[rootId] =
     coordinates[rootId] || createVector());
   let i = 0;
   while (i < ids.length) {
     const id = ids[i++];
-    const [distance, teta, phi] = distances[id];
-    const scale = scales[id];
-    coordinates[id] = createVector(
-      rX + scale * distance * cos(phi) * sin(teta),
-      rY + scale * distance * sin(phi) * sin(teta),
-      rZ + scale * distance * cos(teta)
-    );
+    const shift = getRelativeCoordinates(distances[id], scales[id]);
+    coordinates[id] = sum(rootCoord, shift);
   }
 };
