@@ -16,7 +16,7 @@ const useStyles = makeStyles({
 
 const AppHeader = () => (
   <AppBar position="static">
-    <Toolbar>Trololo</Toolbar>
+    <Toolbar>Space model</Toolbar>
   </AppBar>
 );
 

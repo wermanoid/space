@@ -21,9 +21,8 @@ export const coordinatesUpdaterFactory = (
 ) => (rootId: ObjectId, ids: ObjectId[]) => {
   const rootCoord = (coordinates[rootId] =
     coordinates[rootId] || createVector());
-  let i = 0;
-  while (i < ids.length) {
-    const id = ids[i++];
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i];
     const shift = getRelativeCoordinates(distances[id], scales[id]);
     coordinates[id] = sum(rootCoord, shift);
   }

@@ -7,6 +7,7 @@ const useStyles = makeStyles({
   viewer: {
     backgroundColor: '#ccc',
     width: '100%',
+    maxWidth: '1000px',
   },
 });
 
@@ -14,7 +15,13 @@ const Home = () => {
   const styles = useStyles();
   const canvasRef = createRef<HTMLCanvasElement>();
 
-  useEffect(() => console.log(canvasRef.current));
+  useEffect(() => {
+    console.log('called', canvasRef.current);
+    const ctx: CanvasRenderingContext2D = canvasRef.current!.getContext('2d')!;
+    ctx.ellipse(50, 50, 10, 10, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = 'dashed black';
+    ctx.stroke();
+  });
 
   return (
     <React.Fragment>

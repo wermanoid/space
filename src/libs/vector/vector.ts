@@ -16,11 +16,11 @@ export const sum = (...vectors: Vector3D[]): Vector3D => {
     resultY += v[1];
     resultZ += v[2];
   }
-  return createVector(resultX, resultY, resultZ);
+  return [resultX, resultY, resultZ];
 };
 
 export const dot = ([x, y, z]: Vector3D, multiplier: number): Vector3D => {
-  return createVector(x * multiplier, y * multiplier, z * multiplier);
+  return [x * multiplier, y * multiplier, z * multiplier];
 };
 
 export const distanceSquare = (

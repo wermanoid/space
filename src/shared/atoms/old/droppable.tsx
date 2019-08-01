@@ -11,13 +11,13 @@ export interface DroppableProps<T extends DroppableHtml = any> {
 }
 
 const createOnDropHandler = (
-  callback: (val: string) => void,
-): React.DragEventHandler<Element> => (e) => {
+  callback: (val: string) => void
+): React.DragEventHandler<Element> => e => {
   e.preventDefault();
   callback(e.dataTransfer.getData('text/plain'));
 };
 
-const stub: React.DragEventHandler<Element> = (e) => {
+const stub: React.DragEventHandler<Element> = e => {
   e.preventDefault();
   e.stopPropagation();
 };
@@ -37,7 +37,7 @@ const Droppable = <T extends DroppableHtml, _ = {}>({
       onDrop: createOnDropHandler(log),
       ...rest,
     },
-    children,
+    children
   );
 
 export default Droppable;
