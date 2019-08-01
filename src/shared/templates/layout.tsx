@@ -26,6 +26,7 @@ const Layout: React.SFC<LayoutProps> = ({ children, header, footer }) => {
   const styles = useStyles();
   return (
     <Grid
+      wrap="nowrap"
       container
       direction="column"
       justify="flex-start"

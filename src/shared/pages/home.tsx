@@ -6,6 +6,7 @@ import Viewer from '#atom/viewer';
 const useStyles = makeStyles({
   viewer: {
     backgroundColor: '#ccc',
+    width: '100%',
   },
 });
 

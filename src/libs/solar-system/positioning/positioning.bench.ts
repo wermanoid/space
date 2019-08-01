@@ -1,6 +1,7 @@
 import { times, reduce, identity } from 'lodash/fp';
 
-import { ObjectId, Distance3D, Point3D } from '../types';
+import { ObjectId, Distance3D, Point3D } from '#lib/types';
+
 import { coordinatesUpdaterFactory } from './positioning';
 
 type Distances = Record<ObjectId, Distance3D>;

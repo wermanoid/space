@@ -1,6 +1,5 @@
 import { createVector, sum, Vector3D } from '#lib/vector';
-
-import { ObjectId, Distance3D, Point3D } from '../types';
+import { ObjectId, Distance3D, Point3D } from '#lib/types';
 
 function getRelativeCoordinates(distance: Distance3D, scale: number): Vector3D {
   const dist = distance[0] * scale;
