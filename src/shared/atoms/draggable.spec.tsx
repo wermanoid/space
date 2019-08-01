@@ -1,15 +1,18 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import Draggable from './draggable';
 
 describe('sample', () => {
-  it('sjoudl', () => {
-    const wrap = mount(
+  it('should', () => {
+    const { container } = render(
       <Draggable id="324" render="div">
         work
       </Draggable>
     );
-    expect(wrap).toMatchSnapshot();
+
+    expect(container.firstChild).toMatchSnapshot();
+    expect(container.firstChild).toHaveAttribute('draggable', 'true');
+    expect(container.firstChild).toHaveTextContent('work');
   });
 });

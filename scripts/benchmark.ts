@@ -8,7 +8,7 @@ const suite = new Suite('Space benchmarks', {
   async: true,
   delay: 1,
 })
-  .on('cycle', function(event) {
+  .on('cycle', (event: any) => {
     console.log(String(event.target));
   })
   .on('complete', () => {

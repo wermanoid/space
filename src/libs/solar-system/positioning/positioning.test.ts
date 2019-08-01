@@ -19,6 +19,8 @@ describe('positioning #system', () => {
 
     update(0, [1, 2]);
 
-    console.log(coordinates);
+    expect(coordinates).toHaveProperty('0');
+    expect(coordinates).toHaveProperty('1');
+    expect(coordinates).toHaveProperty('2');
   });
 });

@@ -1,15 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`sample sjoudl 1`] = `
-<Draggable
-  id="324"
-  render="div"
+exports[`sample should 1`] = `
+<div
+  draggable="true"
 >
-  <div
-    draggable={true}
-    onDragStart={[Function]}
-  >
-    work
-  </div>
-</Draggable>
+  work
+</div>
 `;
