@@ -32,7 +32,7 @@ export default [
   {
     name: '#system [Positioning]',
     fn: () => {
-      upd(root, rest);
+      upd(rest, root);
     },
   },
 ];

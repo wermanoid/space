@@ -18,9 +18,8 @@ export const coordinatesUpdaterFactory = (
   distances: Record<ObjectId, Distance3D>,
   scales: Record<ObjectId, number>,
   coordinates: Record<ObjectId, Point3D>
-) => (rootId: ObjectId, ids: ObjectId[]) => {
-  const rootCoord = (coordinates[rootId] =
-    coordinates[rootId] || createVector());
+) => (ids: ObjectId[], rootId?: ObjectId) => {
+  const rootCoord = coordinates[rootId!] || createVector();
   for (let i = 0; i < ids.length; i++) {
     const id = ids[i];
     const shift = getRelativeCoordinates(distances[id], scales[id]);

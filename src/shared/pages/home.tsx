@@ -1,7 +1,9 @@
-import React, { createRef, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import Viewer from '#atom/viewer';
+import { Main } from '#shared/providers';
+import DataService from '#shared/services/data';
 
 const useStyles = makeStyles({
   viewer: {
@@ -13,19 +15,26 @@ const useStyles = makeStyles({
 
 const Home = () => {
   const styles = useStyles();
-  const canvasRef = createRef<HTMLCanvasElement>();
+  const store = Main.userService(DataService);
+
+  const canvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
+    if (!canvas) {
+      return;
+    }
+    const ctx: CanvasRenderingContext2D = canvas!.getContext('2d')!;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.ellipse(50, 50, 10, 10, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+  }, []);
 
   useEffect(() => {
-    console.log('called', canvasRef.current);
-    const ctx: CanvasRenderingContext2D = canvasRef.current!.getContext('2d')!;
-    ctx.ellipse(50, 50, 10, 10, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = 'dashed black';
-    ctx.stroke();
-  });
+    store.set({ id: 123 });
+  }, [store.data.id]);
 
   return (
     <React.Fragment>
-      Home
+      <div> &lt; MD DropDown here</div>
       <Viewer ref={canvasRef} className={styles.viewer} />
     </React.Fragment>
   );

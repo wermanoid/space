@@ -5,11 +5,15 @@ import { makeStyles } from '@material-ui/styles';
 
 import Routes from './Router';
 import Layout from './templates/layout';
+import { Main } from './providers';
+
+import DataService from './services/data';
 
 const useStyles = makeStyles({
   '@global': {
     body: {
       margin: 0,
+      backgroundColor: '#eee',
     },
   },
 });
@@ -26,9 +30,11 @@ const App = () => {
   useStyles();
 
   return (
-    <Layout header={AppHeader} footer={AppFooter}>
-      <Routes />
-    </Layout>
+    <Main.Provider services={[[DataService, DataService()]]}>
+      <Layout header={AppHeader} footer={AppFooter}>
+        <Routes />
+      </Layout>
+    </Main.Provider>
   );
 };
 

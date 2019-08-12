@@ -1,10 +1,10 @@
 export type Vector3D = [number, number, number];
 
-export const createVector = (
+export const createVector = <T extends [number, number, number] = Vector3D>(
   x: number = 0,
   y: number = 0,
   z: number = 0
-): Vector3D => [x, y, z];
+) => [x, y, z] as T;
 
 export const sum = (...vectors: Vector3D[]): Vector3D => {
   let resultX = 0;

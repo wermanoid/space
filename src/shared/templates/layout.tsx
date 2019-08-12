@@ -40,7 +40,13 @@ const Layout: React.SFC<LayoutProps> = ({ children, header, footer }) => {
         justify="flex-start"
         className={styles.page}
       >
-        <Grid item container alignItems="center" direction="column">
+        <Grid
+          item
+          container
+          alignItems="center"
+          direction="column"
+          className={styles.grow}
+        >
           {children}
         </Grid>
         {footer && (
