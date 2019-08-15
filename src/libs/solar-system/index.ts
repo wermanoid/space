@@ -1,1 +1,1 @@
-export const create = (dataSystem: any) => {};
+export * from './solar-system';

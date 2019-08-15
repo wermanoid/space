@@ -19,3 +19,16 @@ export type Distance3D = Vector3D;
  * @property {number} [2] - z
  */
 export type Point3D = Vector3D;
+
+export interface SpaceObject {
+  name: string;
+  mass: number;
+  radius: number;
+  velocity: Vector3D;
+  distance: Distance3D;
+  scale?: {
+    radius?: number;
+    distance?: number;
+  };
+  sattelites?: SpaceObject[];
+}
