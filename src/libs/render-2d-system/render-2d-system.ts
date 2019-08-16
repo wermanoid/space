@@ -57,68 +57,97 @@ export class Render2DSystem {
     const { width, height } = ctx.canvas;
 
     const colors = ['cyan', 'coral', 'lime', 'white']; // z, y, x
-    const metrics = [[0, 0, 100], [0, 100, 0], [100, 0, 0], [20, 100, 20]];
-    let zTeta = toRad(22);
-    const zPhi = toRad(0);
-    const zRotation = 45;
+    const metrics = [[0, 0, 100], [0, 100, 0], [100, 0, 0]];
+    let zTeta = toRad(90);
+    let zPhi = toRad(0);
+    const zRotation = 0;
     const xRotation = toRad(zRotation);
     const yRotation = toRad(zRotation + 90);
+
+    const cube = [
+      // [1, 1, 1],
+      // [-1, 1, 1],
+      // [1, -1, 1],
+      // [-1, -1, 1],
+      [1, 1, 0],
+      [-1, 1, 0],
+      [1, -1, 0],
+      [-1, -1, 0],
+    ].map(xx => xx.map(i => i * 50));
+
+    const toProjectionCoords = ([x, y, z]: any) => {
+      const xyLength = Math.sqrt(x ** 2 + y ** 2);
+
+      const hProjection = Math.round(
+        x * Math.cos(xRotation) + y * Math.cos(yRotation)
+      );
+
+      // const vProjection = -Math.round(
+      //   z * Math.cos(zTeta) +
+      //     xyLength *
+      //       Math.sin(zTeta) *
+      //       Math.sin(Math.atan(Number(y / x) || 0) + xRotation)
+      // );
+      const vProjection = Math.round(
+        xyLength * Math.sin(zTeta) + z * Math.cos(zTeta)
+      );
+      console.log([x, y], (Math.atan(Number(y / x) || 0) * 180) / Math.PI);
+
+      const l = Math.sqrt(hProjection ** 2 + vProjection ** 2);
+      const ang = (Math.sign(vProjection) || 1) * Math.acos(hProjection / l);
+      return [l * Math.cos(ang + zPhi), l * Math.sin(ang + zPhi)];
+    };
+
+    console.log(cube);
 
     const rotate = () => {
       ctx.clearRect(0, 0, width, height);
       metrics.forEach(([x, y, z], idx) => {
-        const length = Math.sqrt(x ** 2 + y ** 2 + z ** 2);
-        const xyLength = Math.sqrt(x ** 2 + y ** 2);
-
-        const hProjection = x * Math.cos(xRotation) + y * Math.cos(yRotation);
-
-        const vProjection = -(
-          z * Math.cos(zTeta) +
-          xyLength *
-            Math.sin(zTeta) *
-            Math.abs(Math.sin(Math.atan(Number(y / x) || 0) + xRotation))
-        );
-        // -(z + xyLength * Math.sin(Math.acos(xyLength / length))) *
-        // Math.cos(zTeta);
-
-        console.log(
-          [x, y, z],
-          Math.abs(Math.cos(Math.atan(y / x) + Math.PI / 4)),
-          (Math.atan(y / x) * 180) / Math.PI
-        );
+        const [rotationX, rotationY] = toProjectionCoords([x, y, z]);
 
         ctx.save();
         ctx.beginPath();
         ctx.moveTo(zeroX, zeroY);
-        ctx.lineTo(
-          zeroX + Math.round(hProjection),
-          zeroY + Math.round(vProjection)
-        );
+        ctx.lineTo(zeroX + rotationX, zeroY + rotationY);
         ctx.strokeStyle = colors[idx];
+        ctx.lineWidth = 3;
         ctx.stroke();
         ctx.restore();
       });
-      zTeta += toRad(0.2);
-      requestAnimationFrame(rotate);
+
+      const coords = cube.map(toProjectionCoords);
+
+      for (let i = 0; i < coords.length; i++) {
+        for (let j = 0; j < coords.length; j++) {
+          if (i === j) continue;
+          const c0 = coords[j];
+          const c1 = coords[i];
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(zeroX + c0[0], zeroY + c0[1]);
+          ctx.lineTo(zeroX + c1[0], zeroY + c1[1]);
+          ctx.strokeStyle = 'yellow';
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      zTeta += toRad(0.6);
+      zPhi += toRad(0.05);
+      if (zTeta >= Math.PI * 2) zTeta = 0;
+      if (zPhi >= Math.PI * 2) zPhi = 0;
+      // requestAnimationFrame(rotate);
     };
 
+    const n = toProjectionCoords([-100, -100, 0]);
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(zeroX + n[0], zeroY + n[1], 5, 5, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+    ctx.restore();
+
     rotate();
-
-    // ctx.save();
-    // ctx.beginPath();
-    // ctx.moveTo(zeroX, zeroY);
-    // ctx.lineTo(zeroX + 150, zeroY);
-    // ctx.strokeStyle = 'lime';
-    // ctx.stroke();
-    // ctx.restore();
-
-    // ctx.save();
-    // ctx.beginPath();
-    // ctx.moveTo(zeroX, zeroY);
-    // ctx.lineTo(zeroX + 1, zeroY + 1);
-    // ctx.strokeStyle = 'red';
-    // ctx.stroke();
-    // ctx.restore();
   }
 
   private renderObjects = () => {
