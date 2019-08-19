@@ -19,7 +19,7 @@ export interface SolarSystemProps {
 
 const useStyles = makeStyles({
   viewer: {
-    backgroundColor: '#282c34',
+    backgroundColor: '#ccc',
     width: '100%',
     maxWidth: '1000px',
   },

@@ -60,14 +60,9 @@ export class SolarSystem {
     this.positionig = new PositioningSystem(store);
   }
 
-  public add(id: ObjectId) {
+  public add(id: ObjectId, sattelites?: ObjectId[]) {
     this.objects.push(id);
-    this.positionig.objects.push(id);
-  }
-
-  public addRelatives(id: ObjectId, sattelites: ObjectId[]) {
-    this.objects.push(id);
-    this.positionig.relatives.push([id, sattelites]);
+    // this.positionig.add(id, sattelites);
   }
 
   public update(delta: number) {
