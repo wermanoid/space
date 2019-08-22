@@ -39,11 +39,16 @@ export class Adapter3d {
   };
 
   public getProjector = () => {
+    const projector = this.getProjectorWithArgs();
+    return ([x, y, z]: Point3D): [number, number] => projector(x, y, z);
+  };
+
+  public getProjectorWithArgs = () => {
     const yawAngleX = this.yawAngleX;
     const yawAngleY = this.yawAngleY;
     const rollAngle = this.rollAngle;
     const pitchAngle = this.pitchAngle;
-    return ([x, y, z]: Point3D): [number, number] => {
+    return (x: number, y: number, z: number): [number, number] => {
       const xyLength = Math.sqrt(x ** 2 + y ** 2);
 
       const hProjection = Math.round(
@@ -53,13 +58,14 @@ export class Adapter3d {
       const vProjection = -Math.round(
         Math.sin(rollAngle) *
           xyLength *
-          Math.sin((Math.sign(y) * Math.acos(x / xyLength) || 0) + yawAngleX) +
+          Math.sin(
+            ((y < 0 ? -1 : 1) * Math.acos(x / xyLength) || 0) + yawAngleX
+          ) +
           z * Math.cos(rollAngle)
       );
 
       const l = Math.sqrt(hProjection ** 2 + vProjection ** 2);
-      const ang =
-        (Math.sign(vProjection) || 1) * Math.acos(hProjection / l) || 0;
+      const ang = (vProjection < 0 ? -1 : 1) * Math.acos(hProjection / l) || 0;
       return [l * Math.cos(ang + pitchAngle), l * Math.sin(ang + pitchAngle)];
     };
   };
