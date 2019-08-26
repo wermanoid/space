@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import SolarSystemRenderer from '#organism/solar-system';
+import SolarSystemRenderer from '#organism/game';
 import { Main } from '#shared/providers';
 import DataService from '#shared/services/data';
 
