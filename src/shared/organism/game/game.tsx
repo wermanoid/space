@@ -26,15 +26,12 @@ const Game: React.SFC<SolarSystemProps> = ({
   version = GraphicVersion.Space2D,
 }) => {
   const styles = useStyles();
-  const canvasRef = useCallback(
-    (canvas: HTMLCanvasElement | null) => {
-      if (!canvas) {
-        return;
-      }
-      init(canvas);
-    },
-    [version]
-  );
+  const canvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
+    if (!canvas) {
+      return;
+    }
+    init(canvas);
+  }, []);
 
   return <Viewer ref={canvasRef} className={styles.viewer} />;
 };
