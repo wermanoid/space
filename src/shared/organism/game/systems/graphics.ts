@@ -3,6 +3,10 @@ import {
   BufferGeometry,
   Material,
   MeshLambertMaterial,
+  SphereBufferGeometry,
+  MeshStandardMaterial,
+  PlaneGeometry,
+  MeshBasicMaterial,
 } from 'three';
 
 export class GraphicsSystem {
@@ -20,25 +24,35 @@ export class GraphicsSystem {
 
 export const loadGraphics = () => {
   const graphics = new GraphicsSystem();
+  graphics.addGeomerty(0, new BoxBufferGeometry(10, 10, 10).translate(0, 0, 5));
   graphics.addGeomerty(
-    'block',
-    new BoxBufferGeometry(10, 10, 10).translate(0, 0, 5)
-  );
-  graphics.addGeomerty(
-    'plate',
+    1,
     new BoxBufferGeometry(10, 10, 1).translate(0, 0, 0.5)
   );
 
+  graphics.addGeomerty(2, new PlaneGeometry(10, 10));
+
   graphics.addMaterial(
-    'stone',
+    0,
     new MeshLambertMaterial({
       color: 0x333333,
+      flatShading: true,
     })
   );
   graphics.addMaterial(
-    'quartz',
+    1,
     new MeshLambertMaterial({
       color: 0x999999,
+      flatShading: true,
+    })
+  );
+
+  graphics.addMaterial(
+    2,
+    new MeshBasicMaterial({
+      color: 0xeeeeee,
+      transparent: true,
+      opacity: 0.4,
     })
   );
 

@@ -1,8 +1,16 @@
 import React, { useEffect } from 'react';
+import { AppBar, Toolbar } from '@material-ui/core';
 
-import SolarSystemRenderer from '#organism/game';
+import Game from '#organism/game';
 import { Main } from '#shared/providers';
 import DataService from '#shared/services/data';
+import Layout from '#shared/templates/layout';
+
+const AppHeader = () => (
+  <AppBar position="static">
+    <Toolbar>Space model</Toolbar>
+  </AppBar>
+);
 
 const Home = () => {
   const store = Main.userService(DataService);
@@ -12,10 +20,9 @@ const Home = () => {
   }, [store.data.id]);
 
   return (
-    <React.Fragment>
-      <div> &lt; MD DropDown here</div>
-      <SolarSystemRenderer />
-    </React.Fragment>
+    <Layout header={AppHeader}>
+      <Game />
+    </Layout>
   );
 };
 

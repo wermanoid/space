@@ -1,8 +1,6 @@
 import React, { useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
-import Viewer from '#atom/viewer';
-
 import { init } from './init';
 
 export enum GraphicVersion {
@@ -17,8 +15,9 @@ export interface SolarSystemProps {
 const useStyles = makeStyles({
   viewer: {
     backgroundColor: '#ccc',
+    flexGrow: 1,
     width: '100%',
-    maxWidth: '1000px',
+    maxWidth: '1400px',
   },
 });
 
@@ -26,14 +25,14 @@ const Game: React.SFC<SolarSystemProps> = ({
   version = GraphicVersion.Space2D,
 }) => {
   const styles = useStyles();
-  const canvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
+  const canvasRef = useCallback((canvas: HTMLDivElement | null) => {
     if (!canvas) {
       return;
     }
     init(canvas);
   }, []);
 
-  return <Viewer ref={canvasRef} className={styles.viewer} />;
+  return <div ref={canvasRef} className={styles.viewer} />;
 };
 
 export default Game;
